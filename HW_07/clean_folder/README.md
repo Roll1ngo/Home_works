@@ -1,1 +1,0 @@
-This is a file for sort folder in category. This is Home_work| module 7| GOIT
