@@ -1,7 +1,13 @@
 from faker import Faker
-from normalize import normalize
 import json
 from functools import wraps
+from normalize import normalize
+
+
+abort_list = ["good bye", "close", "exit"]
+
+with open("phone_book.json", "r") as file:
+    contacts = json.load(file)
 
 fake = Faker("uk-UA")
 Faker.seed(1)
@@ -11,7 +17,7 @@ def faker_dict() -> dict:
     contacts_dict = dict()
 
     for i in range(10):
-        contacts_dict[normalize(fake.name().lower())] = fake.phone_number()
+        contacts_dict[normalize(fake.name()).lower()] = fake.phone_number()
 
     return contacts_dict
 
@@ -24,15 +30,26 @@ def input_error(func):
 
         except IndexError:
             print("Input command name(nospase, example: firstname_lastname) phone")
+            return main()
         except TypeError:
             print("Input>>> command name(example:firstname_lastname) phone")
+            return main()
         except KeyError:
             print("Input>>> command name(example:firstname_lastname) phone")
+            return main()
         except ValueError:
             print("Input>>> command name(example:firstname_lastname) phone")
+            return main()
         return result
 
     return inner_func
+
+
+def del_contact(user_input: str) -> str:
+    number = contacts.pop(user_input[1])
+    with open("phone_book.json", "w") as file:
+        json.dump(contacts, file)
+    return f"{user_input[1]} with number{number} has been del"
 
 
 def hello_func(user_input: str) -> str:
@@ -85,17 +102,15 @@ def main():
         print(result_funcs)
 
 
+COMMANDS = {
+    "hello": hello_func,
+    "add": add_name_and_phone_number,
+    "change": change,
+    "phone": phone,
+    "show_all": show_all,
+    "del": del_contact,
+}
+
+
 if __name__ == "__main__":
-    with open("phone_book.json", "r") as file:
-        contacts = json.load(file)
-
-    COMMANDS = {
-        "hello": hello_func,
-        "add": add_name_and_phone_number,
-        "change": change,
-        "phone": phone,
-        "show_all": show_all,
-    }
-    abort_list = ["good bye", "close", "exit"]
-
     main()
