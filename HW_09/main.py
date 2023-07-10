@@ -23,7 +23,7 @@ def faker_dict() -> dict:
 
 
 def show_help(user_input):
-    return f'"hello"ex=hello (show welcome)\n"add"  example: add name  phone_number(add name and phone number)\n"change" example: change name new_numder(change phone number)\n"phone" example:phone name (show phone number)\n"show_all" example: show_all(show all phone book)\n"del"  example: del name(del name and phone number)\n"help" example: help (show commands list)'
+    return f'"hello"ex=hello (show welcome)\n"add"  example: add name phone_number(add name and phone number)\n"change" example: change name new_numder(change phone number)\n"phone" example:phone name (show phone number)\n"show_all" example: show_all(show all phone book)\n"del"  example: del name(del name and phone number)\n"help" example: help (show commands list)'
 
 
 def decor_input_error(func):
@@ -33,16 +33,16 @@ def decor_input_error(func):
             result = func(*args, **kwargs)
 
         except IndexError:
-            print("Input command name(nospase, example: firstname_lastname) phone")
+            print("Something wrong ")
             return main()
         except TypeError:
-            print("Input>>> command name(example:firstname_lastname) phone")
+            print("Something wrong' ")
             return main()
         except KeyError:
-            print("Input>>> command name(example:firstname_lastname) phone")
+            print("Something wrong ")
             return main()
         except ValueError:
-            print("Input>>> command name(example:firstname_lastname) phone")
+            print("Something wrong ")
             return main()
         return result
 
