@@ -22,7 +22,11 @@ def faker_dict() -> dict:
     return contacts_dict
 
 
-def input_error(func):
+def show_help(user_input):
+    return f'"hello"ex=hello (show welcome)\n"add"  example: add name  phone_number(add name and phone number)\n"change" example: change name new_numder(change phone number)\n"phone" example:phone name (show phone number)\n"show_all" example: show_all(show all phone book)\n"del"  example: del name(del name and phone number)\n"help" example: help (show commands list)'
+
+
+def decor_input_error(func):
     @wraps(func)
     def inner_func(*args, **kwargs):
         try:
@@ -45,10 +49,21 @@ def input_error(func):
     return inner_func
 
 
+def log_decorator(func):
+    @wraps(func)
+    def inner(*args, **kwargs):
+        result = func(*args, **kwargs)
+        with open("phone_book.json", "w") as file:
+            json.dump(contacts, file)
+        return result
+
+    return inner
+
+
+@log_decorator
 def del_contact(user_input: str) -> str:
     number = contacts.pop(user_input[1])
-    with open("phone_book.json", "w") as file:
-        json.dump(contacts, file)
+
     return f"{user_input[1]} with number{number} has been del"
 
 
@@ -64,34 +79,33 @@ def show_all(user_input: str) -> dict:
     return contacts
 
 
+@log_decorator
 def add_name_and_phone_number(user_input: str) -> dict:
     contacts[normalize(user_input[1])] = user_input[2]
-
-    with open("phone_book.json", "w") as file:
-        json.dump(contacts, file)
 
     return f"contact {user_input[1].capitalize()} which has the number {user_input[2]} add to phone book"
 
 
+@log_decorator
 def change(user_input: str) -> dict:
     value = contacts.pop(user_input[1])
     contacts[normalize(user_input[1])] = user_input[2]
-
-    with open("phone_book.json", "w") as file:
-        json.dump(contacts, file)
 
     return (
         f"{user_input[1].capitalize()}:{value} changed phone number to {user_input[2]}"
     )
 
 
-@input_error
+@decor_input_error
 def get_handler(command: str) -> object:
     return COMMANDS[command]
 
 
-@input_error
+decor_input_error
+
+
 def main():
+    print('"help" show list of commands"')
     while True:
         user_input = input(">>>").lower()
         if user_input in abort_list:
@@ -109,6 +123,7 @@ COMMANDS = {
     "phone": phone,
     "show_all": show_all,
     "del": del_contact,
+    "help": show_help,
 }
 
 
