@@ -101,9 +101,7 @@ def get_handler(command: str) -> object:
     return COMMANDS[command]
 
 
-decor_input_error
-
-
+@decor_input_error
 def main():
     print('"help" show list of commands"')
     while True:
